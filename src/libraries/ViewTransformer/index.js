@@ -38,9 +38,9 @@ export default class ViewTransformer extends React.Component {
         super(props);
         this.state = {
             // transform state
-            scale: 1,
-            translateX: 0,
-            translateY: 0,
+            scale: this.props.initScale || 1, //ART
+            translateX: this.props.initTranslateX || 0,
+            translateY: this.props.initTranslateY || 0,
             // animation state
             animator: new Animated.Value(0),
             // layout
