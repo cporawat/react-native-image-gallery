@@ -260,10 +260,25 @@ export default class Gallery extends PureComponent {
         this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
     }
 
+    snapImage = () => {
+        console.log('check');
+        //console.log(this.zoomImageRef);
+
+        const imageRef = this.imageRefs.get(0);
+        if (imageRef) { // always get first one
+            imageRef.getCurrentSnapView();
+        }
+        // let ref = this.imageRefs.get(page);
+        // //alert('nothing');
+    }
+
     renderPage(pageData, pageId) {
         const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
+       // console.log('render page');
         return (
             <TransformableImage
+                //ref={this.props.zoomImageRef}
+                //ref={view => { this.zoomImageRef = view; }}
                 //ART
                 minScale={this.props.minScale}
                 maxScale={this.props.maxScale}
@@ -282,6 +297,8 @@ export default class Gallery extends PureComponent {
                 errorComponent={errorComponent}
                 imageComponent={imageComponent}
                 image={pageData}
+                //snapImage={this.props.snapImage} // ART
+                onSnapChange={this.props.onSnapChange}
             />
         );
     }

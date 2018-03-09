@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, Text, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import ViewTransformer from '../ViewTransformer';
+import { captureRef, captureScreen } from "react-native-view-shot";
 
 export default class TransformableImage extends PureComponent {
     static propTypes = {
@@ -47,7 +48,13 @@ export default class TransformableImage extends PureComponent {
             viewHeight: 0,
             imageLoaded: false,
             imageDimensions: props.image.dimensions,
-            keyAcumulator: 1
+            keyAcumulator: 1,
+            snapValue: { // for snap-view
+                format: "png",
+                quality: 0.9,
+                result: "tmpfile",
+                snapshotContentContainer: false
+            }
         };
     }
 
@@ -140,6 +147,59 @@ export default class TransformableImage extends PureComponent {
         );
     }
 
+    //snapshot = refname => () => {
+    snapshot(refname) {
+    alert('know');
+        (refname
+            ? captureRef(this.refs[refname], this.state.snapValue)
+            : captureScreen(this.state.snapValue)
+        ).then(
+            res =>
+                this.state.snapValue.result !== "tmpfile"
+                    ? res
+                    : new Promise((success, failure) =>
+                        // just a test to ensure res can be used in Image.getSize
+                        Image.getSize(
+                            res,
+                            (width, height) => (
+                                console.log(res, width, height), success(res)
+                            ),
+                            failure
+                        )
+                    )
+            )
+            .then(res =>
+                //alert(res)
+                this.props.onSnapChange(res)
+            // this.setState({
+            //     error: null,
+            //     res,
+            //     previewSource: {
+            //         uri:
+            //         this.state.value.result === "base64"
+            //             ? "data:image/" + this.state.value.format + ";base64," + res
+            //             : res
+            //     }
+            // })
+            )
+            .catch(
+            error => (
+                console.warn(error)//,
+                //this.setState({ error, res: null, previewSource: null })
+            )
+            );
+    }
+
+    getCurrentSnapView = () => {
+        console.log('area');
+        console.log(this.snapArea);
+        //alert('he');
+        // return (
+        this.snapshot('viewTransformer');
+
+        // );
+    }
+
     render() {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
         const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
@@ -172,10 +232,15 @@ export default class TransformableImage extends PureComponent {
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
-        const content = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
+        const content = imageComponent ? imageComponent(imageProps, imageDimensions) :
+            // <View ref='snapArea' collapsable={false} style={{ width: style.width, height: style.height }}>
+                <Image { ...imageProps } />
+            // </View>
+            ;
 
         return (
             <ViewTransformer
+                collapsable={false} // ART
                 ref={'viewTransformer'}
                 key={'viewTransformer#' + keyAccumulator} // when image source changes, we should use a different node to avoid reusing previous transform state
                 enableTransform={enableTransform && imageLoaded} // disable transform until image is loaded
