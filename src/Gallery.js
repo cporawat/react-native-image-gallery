@@ -265,6 +265,8 @@ export default class Gallery extends PureComponent {
         return (
             <TransformableImage
                 //ART
+                minScale={this.props.minScale}
+                maxScale={this.props.maxScale}
                 initScale={this.props.initScale}
                 initTranslateX={this.props.initTranslateX}
                 initTranslateY={this.props.initTranslateY}

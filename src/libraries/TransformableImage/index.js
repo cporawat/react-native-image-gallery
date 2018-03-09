@@ -144,7 +144,7 @@ export default class TransformableImage extends PureComponent {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
         const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
 
-        let maxScale = 1;
+        //let maxScale = this.props.maxScale; //1;
         let contentAspectRatio;
         let width, height; // imageDimensions
 
@@ -155,10 +155,10 @@ export default class TransformableImage extends PureComponent {
 
         if (width && height) {
             contentAspectRatio = width / height;
-            if (viewWidth && viewHeight) {
-                maxScale = Math.max(width / viewWidth, height / viewHeight);
-                maxScale = Math.max(1, maxScale);
-            }
+            // if (viewWidth && viewHeight) {
+            //     maxScale = Math.max(width / viewWidth, height / viewHeight);
+            //     maxScale = Math.max(1, maxScale);
+            // }
         }
 
         const imageProps = {
@@ -184,11 +184,13 @@ export default class TransformableImage extends PureComponent {
                 enableResistance={true}
                 onTransformGestureReleased={onTransformGestureReleased}
                 onViewTransformed={onViewTransformed}
-                maxScale={maxScale}
+                //maxScale={maxScale}
                 contentAspectRatio={contentAspectRatio}
                 onLayout={this.onLayout}
                 //ART
                 initScale={this.props.initScale} //ART
+                minScale={this.props.minScale}
+                maxScale={this.props.maxScale}
                 initTranslateX={this.props.initTranslateX}
                 initTranslateY={this.props.initTranslateY}
                 style={style}>

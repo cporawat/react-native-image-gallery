@@ -306,7 +306,8 @@ export default class ViewTransformer extends React.Component {
         let curScale = this.state.scale;
         let scaleBy;
         if (curScale > (1 + this.props.maxScale) / 2) {
-            scaleBy = 1 / curScale;
+            //scaleBy = 1 / curScale; ART
+            scaleBy = this.props.minScale / curScale;
         } else {
             scaleBy = this.props.maxScale / curScale;
         }
@@ -382,7 +383,7 @@ export default class ViewTransformer extends React.Component {
 
     animateBounce () {
         let curScale = this.state.scale;
-        let minScale = 1;
+        let minScale = this.props.minScale; //1;
         let maxScale = this.props.maxScale;
         let scaleBy = 1;
         if (curScale > maxScale) {
