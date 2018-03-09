@@ -261,10 +261,10 @@ export default class Gallery extends PureComponent {
     }
 
     snapImage = () => {
-        console.log('check');
+        //console.log('check');
         //console.log(this.zoomImageRef);
 
-        const imageRef = this.imageRefs.get(0);
+        const imageRef = this.imageRefs.get(0); // Always get the first one, because we have only one picture
         if (imageRef) { // always get first one
             imageRef.getCurrentSnapView();
         }

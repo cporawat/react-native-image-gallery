@@ -149,7 +149,7 @@ export default class TransformableImage extends PureComponent {
 
     //snapshot = refname => () => {
     snapshot(refname) {
-    alert('know');
+    //alert('know');
         (refname
             ? captureRef(this.refs[refname], this.state.snapValue)
             : captureScreen(this.state.snapValue)
@@ -191,8 +191,8 @@ export default class TransformableImage extends PureComponent {
     }
 
     getCurrentSnapView = () => {
-        console.log('area');
-        console.log(this.snapArea);
+        //console.log('area');
+        //console.log(this.snapArea);
         //alert('he');
         // return (
         this.snapshot('viewTransformer');
