@@ -148,8 +148,8 @@ export default class TransformableImage extends PureComponent {
     }
 
     //snapshot = refname => () => {
-    snapshot(refname) {
-    //alert('know');
+    snapshot(refname, snapRefId) {
+        //alert('know');
         (refname
             ? captureRef(this.refs[refname], this.state.snapValue)
             : captureScreen(this.state.snapValue)
@@ -169,8 +169,9 @@ export default class TransformableImage extends PureComponent {
                     )
             )
             .then(res =>
+
                 //alert(res)
-                this.props.onSnapChange(res)
+                this.props.onSnapChange(snapRefId, res)
             // this.setState({
             //     error: null,
             //     res,
@@ -190,12 +191,12 @@ export default class TransformableImage extends PureComponent {
             );
     }
 
-    getCurrentSnapView = () => {
+    getCurrentSnapView = (snapRefId) => {
         //console.log('area');
         //console.log(this.snapArea);
         //alert('he');
         // return (
-        this.snapshot('viewTransformer');
+        this.snapshot('viewTransformer', snapRefId);
 
         // );
     }
@@ -234,7 +235,7 @@ export default class TransformableImage extends PureComponent {
 
         const content = imageComponent ? imageComponent(imageProps, imageDimensions) :
             // <View ref='snapArea' collapsable={false} style={{ width: style.width, height: style.height }}>
-                <Image { ...imageProps } />
+            <Image { ...imageProps } />
             // </View>
             ;
 

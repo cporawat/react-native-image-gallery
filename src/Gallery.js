@@ -260,13 +260,13 @@ export default class Gallery extends PureComponent {
         this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
     }
 
-    snapImage = () => {
+    snapImage = (snapRefId) => {
         //console.log('check');
         //console.log(this.zoomImageRef);
 
         const imageRef = this.imageRefs.get(0); // Always get the first one, because we have only one picture
         if (imageRef) { // always get first one
-            imageRef.getCurrentSnapView();
+            imageRef.getCurrentSnapView(snapRefId);
         }
         // let ref = this.imageRefs.get(page);
         // //alert('nothing');
@@ -274,9 +274,10 @@ export default class Gallery extends PureComponent {
 
     renderPage(pageData, pageId) {
         const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
-       // console.log('render page');
+        // console.log('render page');
         return (
             <TransformableImage
+                //snapRefId={this.props.snapRefId || null} // ART: Custom remember id, use for crop
                 //ref={this.props.zoomImageRef}
                 //ref={view => { this.zoomImageRef = view; }}
                 //ART
@@ -301,6 +302,18 @@ export default class Gallery extends PureComponent {
                 onSnapChange={this.props.onSnapChange}
             />
         );
+    }
+
+    // ART
+    customForceUpdate = (initScale, x, y) => {
+        let transformer = this.getImageTransformer(this.currentPage);
+
+        if (transformer) {
+            transformer.updateTransform({ scale: initScale, translateX: x, translateY: y });
+            //transformer.forceUpdateTransform({ scale: initScale, translateX: x, translateY: y });
+            // transformer.forceUpdateTransform({ scale: 2, translateX: 30, translateY: 30 });
+            //transformer.forceUpdateTransform({ scale: this.props.initScale, translateX: this.props.initTranslateX, translateY: this.props.initTranslateY });
+        }
     }
 
     resetHistoryImageTransform() {
