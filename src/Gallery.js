@@ -231,6 +231,14 @@ export default class Gallery extends PureComponent {
         }
     }
 
+    // ART: get border limit
+    // Connect to function at ViewTransformer
+    getCurrentAvailableTranslateSpace = () => {
+        const viewTransformer = this.getImageTransformer(this.currentPage);
+
+        return viewTransformer.getAvailablePanSpace();
+    }
+
     getImageTransformer(page) {
         if (page >= 0 && page < this.pageCount) {
             let ref = this.imageRefs.get(page);
@@ -261,15 +269,20 @@ export default class Gallery extends PureComponent {
     }
 
     snapImage = (snapRefId) => {
-        //console.log('check');
-        //console.log(this.zoomImageRef);
+        return new Promise(resolve => {
+            //console.log('check');
+            //console.log(this.zoomImageRef);
 
-        const imageRef = this.imageRefs.get(0); // Always get the first one, because we have only one picture
-        if (imageRef) { // always get first one
-            imageRef.getCurrentSnapView(snapRefId);
-        }
-        // let ref = this.imageRefs.get(page);
-        // //alert('nothing');
+            const imageRef = this.imageRefs.get(0); // Always get the first one, because we have only one picture
+            if (imageRef) { // always get first one
+                imageRef.getCurrentSnapView(snapRefId).then(res => { 
+                    //console.log('check3', res);
+                    resolve(res); 
+                });
+            }
+            // let ref = this.imageRefs.get(page);
+            // //alert('nothing');
+        });
     }
 
     renderPage(pageData, pageId) {
@@ -298,8 +311,8 @@ export default class Gallery extends PureComponent {
                 errorComponent={errorComponent}
                 imageComponent={imageComponent}
                 image={pageData}
-                //snapImage={this.props.snapImage} // ART
-                onSnapChange={this.props.onSnapChange}
+            //snapImage={this.props.snapImage} // ART
+            //onSnapChange={this.props.onSnapChange}
             />
         );
     }

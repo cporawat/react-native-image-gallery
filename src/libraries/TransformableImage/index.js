@@ -50,9 +50,9 @@ export default class TransformableImage extends PureComponent {
             imageDimensions: props.image.dimensions,
             keyAcumulator: 1,
             snapValue: { // for snap-view
-                format: "png",
-                quality: 0.9,
-                result: "tmpfile",
+                format: 'jpg',
+                quality: 1.0,
+                result: 'tmpfile',
                 snapshotContentContainer: false
             }
         };
@@ -149,46 +149,54 @@ export default class TransformableImage extends PureComponent {
 
     //snapshot = refname => () => {
     snapshot(refname, snapRefId) {
-        //alert('know');
-        (refname
-            ? captureRef(this.refs[refname], this.state.snapValue)
-            : captureScreen(this.state.snapValue)
-        ).then(
-            res =>
-                this.state.snapValue.result !== "tmpfile"
-                    ? res
-                    : new Promise((success, failure) =>
-                        // just a test to ensure res can be used in Image.getSize
-                        Image.getSize(
-                            res,
-                            (width, height) => (
-                                console.log(res, width, height), success(res)
-                            ),
-                            failure
+        return new Promise(resolve => {
+            //alert('know');
+            (refname
+                ? captureRef(this.refs[refname], this.state.snapValue)
+                : captureScreen(this.state.snapValue)
+            ).then(
+                res =>
+                    this.state.snapValue.result !== "tmpfile"
+                        ? res
+                        : new Promise((success, failure) =>
+                            // just a test to ensure res can be used in Image.getSize
+                            Image.getSize(
+                                res,
+                                (width, height) => (
+                                    //sucess(res)
+                                    console.log(res, width, height), success(res)
+                                ),
+                                failure
+                            )
                         )
-                    )
-            )
-            .then(res =>
+                )
+                .then(res => {
+                    //console.log('res here', snapRefId, res);
+                    resolve(res);
+                    //alert('res here')
+                    //resolve(snapRefId, res);
+                    //alert(res)
+                    //this.props.onSnapChange(snapRefId, res);
+                    // this.setState({
+                    //     error: null,
+                    //     res,
+                    //     previewSource: {
+                    //         uri:
+                    //         this.state.value.result === "base64"
+                    //             ? "data:image/" + this.state.value.format + ";base64," + res
+                    //             : res
+                    //     }
+                    // })
+                }
+                )
+                .catch(
+                error => (
+                    console.warn(error)//,
+                    //this.setState({ error, res: null, previewSource: null })
+                )
+                );
+        });
 
-                //alert(res)
-                this.props.onSnapChange(snapRefId, res)
-            // this.setState({
-            //     error: null,
-            //     res,
-            //     previewSource: {
-            //         uri:
-            //         this.state.value.result === "base64"
-            //             ? "data:image/" + this.state.value.format + ";base64," + res
-            //             : res
-            //     }
-            // })
-            )
-            .catch(
-            error => (
-                console.warn(error)//,
-                //this.setState({ error, res: null, previewSource: null })
-            )
-            );
     }
 
     getCurrentSnapView = (snapRefId) => {
@@ -196,10 +204,19 @@ export default class TransformableImage extends PureComponent {
         //console.log(this.snapArea);
         //alert('he');
         // return (
-        this.snapshot('viewTransformer', snapRefId);
+        return new Promise(resolve => {
+            this.snapshot('viewTransformer', snapRefId).then(res => {
+                //console.log('check2', a);
+                resolve(res);
+            })
+        });
 
         // );
     }
+
+    // getAvailablePanSpace = () => {
+    //     return this.getViewTransformerInstance().getAvailablePanSpace();
+    // }
 
     render() {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;

@@ -75,14 +75,14 @@ export default class ViewTransformer extends React.Component {
 
     // ART: Update state base on props change which come from parent change page etc.
     componentWillReceiveProps(nextProps) {
-        console.log('compare');
-        console.log(nextProps.initScale,nextProps.initTranslateX,nextProps.initTranslateY);
-        console.log(this.props.initScale,this.props.initTranslateX,this.props.initTranslateY);
+        //console.log('compare');
+        //console.log(nextProps.initScale, nextProps.initTranslateX, nextProps.initTranslateY);
+        //console.log(this.props.initScale, this.props.initTranslateX, this.props.initTranslateY);
         if (nextProps.initScale !== this.props.initScale ||
             nextProps.initTranslateX !== this.props.initTranslateX ||
-            nextProps.initTranslateY !== this.props.initTranslateY 
+            nextProps.initTranslateY !== this.props.initTranslateY
         ) {
-            console.log('got assign');
+            //console.log('got assign');
             this.setState({
                 scale: nextProps.initScale,
                 translateX: nextProps.initTranslateX,
@@ -320,6 +320,8 @@ export default class ViewTransformer extends React.Component {
             vx = 0;
         }
 
+        //console.log(startX,startY,vx,vy,minX,maxX,minY,maxY);
+
         this.scroller.fling(startX, startY, vx, vy, minX, maxX, minY, maxY);
     }
 
@@ -349,15 +351,22 @@ export default class ViewTransformer extends React.Component {
         this.animate(rect);
     }
 
+    // ART: Get border
+    getAvailablePanSpace = () => {
+        return availableTranslateSpace(this.transformedContentRect(), this.viewPortRect());
+    }
+
     applyResistance(dx, dy) {
         let availablePanDistance = availableTranslateSpace(this.transformedContentRect(), this.viewPortRect());
 
         if ((dx > 0 && availablePanDistance.left < 0) ||
             (dx < 0 && availablePanDistance.right < 0)) {
+            //console.log('inertia 1');
             dx /= 3;
         }
         if ((dy > 0 && availablePanDistance.top < 0) ||
             (dy < 0 && availablePanDistance.bottom < 0)) {
+            //console.log('inertia 2');
             dy /= 3;
         }
         return { dx, dy };
